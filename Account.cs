@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using transactions;
 
 
-namespace BankAccount{
+namespace BankAccount
+{
 
     public class Account
     {
@@ -20,10 +21,12 @@ namespace BankAccount{
         }
         public void Deposit(double addAmt)
         {
-            
+
             Balance += addAmt;
+            DateTime now = DateTime.Now;
+            tr.Add(new trans(addAmt, Balance, now));
             WriteLine($"Your balance is {Balance:C} now.");
-    
+
         }
         public void Withdraw(double outAmt)
         {
@@ -36,18 +39,26 @@ namespace BankAccount{
                 WriteLine("Sorry! Your balance is not enough");
             }
             WriteLine($"Your balance is {Balance:C} now.");
-            
+            DateTime now = DateTime.Now;
+            tr.Add(new trans(outAmt * -1, Balance, now));
+
         }
         public void Transactions(int s)
         {
+            int n = (tr.Count) - 1;
+            int v = n - s;
+            for (int k = n; k > v; k--)
+            {
+                tr[k].trnum(accountNum);
+            }
             WriteLine($"Your balance is {Balance:C} now.");
         }
-        
-        
+
+
         public void AllAcc()
         {
             WriteLine($"Account number: {accountNum}, Name: {Name}");
-        }    
-    } 
+        }
+    }
 
 }

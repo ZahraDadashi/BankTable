@@ -3,18 +3,19 @@ namespace transactions
 {
     public class trans
     {
-        public int accountNum;
         public double changeAmt;
+        public double Balance;
         public DateTimeOffset time;
-        public trans(int accNum, double amt,DateTimeOffset n)
+        public trans( double amt,double Bal,DateTimeOffset n)
         {
-            accountNum = accNum;
             changeAmt = amt;
             time = n;
+            Balance = Bal;
+            
         }
-        public void trnum()
+        public void trnum(int accNum)
         {  
-            Console.WriteLine($"Account number:{accountNum} deposit/withdraw:{changeAmt} at:{time}");
+            Console.WriteLine($"Account number:{accNum,-5} deposit/withdraw:{changeAmt,-5} Balance:{Balance,-5} at:{time,-5}");
         }
         
     }
