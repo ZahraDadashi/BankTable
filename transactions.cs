@@ -1,4 +1,6 @@
 using BankAccount;
+using logProject;
+
 namespace transactions
 {
     public class trans
@@ -16,6 +18,7 @@ namespace transactions
         public void trnum(int accNum)
         {  
             Console.WriteLine($"Account number:{accNum,-5} deposit/withdraw:{changeAmt,-5} Balance:{Balance,-5} at:{time,-5}");
+            
         }
         
     }
