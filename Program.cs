@@ -3,148 +3,208 @@ using System.Collections.Generic;
 using static System.IO.Directory;
 using static System.IO.Path;
 using static System.Environment;
-
-using BankAccount;
-using transactions;
-using logProject;
-
-class Bank
+using Microsoft.EntityFrameworkCore;
+using Packt.Shared;
+namespace ConsoleApp1
 {
-    static void Main()
+    class Program
     {
-        Menu();
-    }
-
-    static void Menu()
-    {
-        List<Account> accountslist = new List<Account>();
-
-
-        while (true)
+        static void Main(string[] args)
         {
-            try
+            using (var bd = new BankData())
             {
-                WriteLine("******Welcome to our bank******");
-                WriteLine("Please select your action:");
-                WriteLine("a.Open Account  b.Deposite  c.Withdraw  d.Transaction e.All Accounts");
-
-                string? ch = ReadLine();
-
-                switch (ch)
+                while (true)
                 {
-                    case "a":
+                    try
+                    {
+                        WriteLine("******Welcome to our bank******");
+                        WriteLine("Please select your action:");
+                        WriteLine("a.Create Account  b.Read Account  c.Update Account  d.Delete Account e.Get Transactions");
 
-                        Write("Enter your name:");
-                        string? name = ReadLine();
-                        Write("Enter your account number:");
-                        int acnum = int.Parse(ReadLine());
-                        Write("Enter your initial balance:");
-                        double init = double.Parse(ReadLine());
-                        Account obj = new Account(name, acnum, init);
-                        DateTime now = DateTime.Now;
-                        obj.tr.Add(new trans(init, init, now));
-                        accountslist.Add(obj);
-                        WriteLine("Your account added successfully.");
-                        string t = "Log written date: " + now + " *** " + "from method: while loop";
-                        log ob = new log();
-                        ob.WriteToLogFile(t);
+                        string? ch = ReadLine();
 
-
-
-
-                        break;
-
-                    case "b":
-
-                        Write("Enter your account number:");
-                        int nmChk = int.Parse(ReadLine());
-                        bool f = true;
-                        for (int i = 0; i < accountslist.Count; i++)
+                        switch (ch)
                         {
-                            if (accountslist[i].accountNum.Equals(nmChk))
-                            {
-                                Write("Amount to deposit:");
-                                double amt = double.Parse(ReadLine());
-                                accountslist[i].Deposit(amt);
-                                f = false;
-                            }
+                            case "a":
+                                try
+                                {
+                                    Write("Enter your name:");
+                                    string? name = ReadLine();
+                                    Write("Enter your initial balance:");
+                                    double init = double.Parse(ReadLine());
+                                    var ac = new Account()
+                                    {
+                                        Name = name,
+                                        Balance = init
+                                    };
+                                    bd.Accounts.Add(ac);
+                                    bd.SaveChanges();
+                                    int id = ac.AccountID;
+                                    DateTime now = DateTime.Now;
+                                    var tr = new trans()
+                                    {
+                                        AccNum = id,
+                                        changeAmt = init,
+                                        Balance = init,
+                                        time = now
+                                    };
+
+                                    bd.Transactions.Add(tr);
+                                    bd.SaveChanges();
+                                    DateTime now1 = DateTime.Now;
+                                    string t = "Log written date: " + now1 + " *** " + "from method: Create Account";
+                                    log ob = new log();
+                                    ob.WriteToLogFile(t);
+
+                                }
+                                catch (Exception ex)
+                                {
+                                    DateTime n = DateTime.Now;
+                                    string text = "Error Log written date: " + n + " *** " + "from method: Create Account";
+                                    log obje = new log();
+                                    obje.WriteToErrFile(text);
+                                    WriteLine($"{ex.GetType()} says {ex.Message}");
+                                }
+                                break;
+                            case "b":
+                                try
+                                {
+                                    WriteLine("{0,-10}{1,-10}{2,-10}",
+                                    "AccountID", "Name", "Balance");
+                                    foreach (Account a in bd.Accounts.
+                                    OrderBy(acc => acc.AccountID))
+                                    {
+                                        WriteLine("{0,-10}{1,-10}{2,-10}",
+                                        a.AccountID, a.Name, a.Balance);
+                                    }
+                                    DateTime now1 = DateTime.Now;
+                                    string t = "Log written date: " + now1 + " *** " + "from method: Read Account";
+                                    log ob = new log();
+                                    ob.WriteToLogFile(t);
+                                }
+                                catch (Exception ex)
+                                {
+                                    DateTime n = DateTime.Now;
+                                    string text = "Error Log written date: " + n + " *** " + "from method: Read Account";
+                                    log obje = new log();
+                                    obje.WriteToErrFile(text);
+                                    WriteLine($"{ex.GetType()} says {ex.Message}");
+                                }
+                                break;
+
+                            case "c":
+                                Write("Please enter you account number:");
+                                int acnum = int.Parse(ReadLine());
+                                Write("Enter your deposit/withdraw:");
+                                double newBal = double.Parse(ReadLine());
+                                var v = bd.Accounts.SingleOrDefault(a => a.AccountID == acnum);
+                                if (v != null)
+                                {
+                                    try
+                                    {
+                                        v.Balance += newBal;
+                                        bd.SaveChanges();
+                                        DateTime now2 = DateTime.Now;
+                                        var b = new trans()
+                                        {
+                                            AccNum = acnum,
+                                            changeAmt = newBal,
+                                            Balance = v.Balance,
+                                            time = now2
+                                        };
+                                        bd.Transactions.Add(b);
+                                        bd.SaveChanges();
+                                        DateTime now1 = DateTime.Now;
+                                        string t = "Log written date: " + now1 + " *** " + "from method: Update Account";
+                                        log ob = new log();
+                                        ob.WriteToLogFile(t);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        DateTime n = DateTime.Now;
+                                        string text = "Error Log written date: " + n + " *** " + "from method: Update Account";
+                                        log obje = new log();
+                                        obje.WriteToErrFile(text);
+                                        WriteLine($"{ex.GetType()} says {ex.Message}");
+                                    }
+                                }
+
+                                break;
+                            case "d":
+                                Write("Please enter you account number:");
+                                int acnumber = int.Parse(ReadLine());
+                                IQueryable<Account>? r = bd.Accounts?.Where(
+                                            a => a.AccountID == acnumber);
+                                if (r != null)
+                                {
+                                    try
+                                    {
+                                        bd.Accounts.RemoveRange(r);
+                                        bd.SaveChanges();
+                                        DateTime now1 = DateTime.Now;
+                                        string t = "Log written date: " + now1 + " *** " + "from method: Delete Account";
+                                        log ob = new log();
+                                        ob.WriteToLogFile(t);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        DateTime n = DateTime.Now;
+                                        string text = "Error Log written date: " + n + " *** " + "from method: Delete Account";
+                                        log obje = new log();
+                                        obje.WriteToErrFile(text);
+                                        WriteLine($"{ex.GetType()} says {ex.Message}");
+                                    }
+                                }
+                                break;
+                            case "e":
+                                try
+                                {
+                                    Write("Please enter you account number:");
+                                    int accountnum = int.Parse(ReadLine());
+                                    WriteLine("Your transactions are:");
+                                    WriteLine("{0,-15}{1,-15}{2,-15}{3,-15}",
+                                    "TransactionID", "ChangeAamount", "Balance", "Time");
+                                    foreach (trans f in bd.Transactions.Where(a => a.AccNum == accountnum))
+                                    {
+                                        WriteLine("{0,-15}{1,-15}{2,-15}{3,-15}",
+                                    f.TransID, f.changeAmt, f.Balance, f.time);
+                                    }
+                                    DateTime now1 = DateTime.Now;
+                                    string t = "Log written date: " + now1 + " *** " + "from method: Get Transactions";
+                                    log ob = new log();
+                                    ob.WriteToLogFile(t);
+                                }
+                                catch (Exception ex)
+                                {
+
+                                    DateTime n = DateTime.Now;
+                                    string text = "Error Log written date: " + n + " *** " + "from method: Get Transactions";
+                                    log obje = new log();
+                                    obje.WriteToErrFile(text);
+                                    WriteLine($"{ex.GetType()} says {ex.Message}");
+                                }
+
+                                break;
+
+
                         }
-                        if (f == true)
-                        {
-                            WriteLine("your account doesn't exist.");
-                        }
+                    }
+                    catch (Exception ex)
+                    {
 
-                        break;
-
-                    case "c":
-
-                        Write("Enter your account number:");
-                        int numChk = int.Parse(ReadLine());
-                        bool fl = true;
-
-                        for (int i = 0; i < accountslist.Count; i++)
-                        {
-                            if (accountslist[i].accountNum.Equals(numChk))
-                            {
-                                Write("Amount to withdraw:");
-                                double amt = double.Parse(ReadLine());
-                                accountslist[i].Withdraw(amt);
-                                fl = false;
-                            }
-                        }
-                        if (fl == true)
-                        {
-                            WriteLine("your account doesn't exist.");
-                        }
-
-                        break;
-
-                    case "d":
-
-                        Write("Enter your account number:");
-                        int nChk = int.Parse(ReadLine());
-                        bool fla = true;
-
-                        for (int i = 0; i < accountslist.Count; i++)
-                        {
-                            if (accountslist[i].accountNum.Equals(nChk))
-                            {
-                                Write("Enter the number of transactions you want:");
-                                int tn = int.Parse(ReadLine());
-                                accountslist[i].Transactions(tn);
-                                fla = false;
-                            }
-
-                        }
-                        if (fla == true)
-                        {
-                            WriteLine("your account doesn't exist.");
-                        }
-                        break;
-
-                    case "e":
-
-                        foreach (Account acc in accountslist)
-                        {
-                            acc.AllAcc();
-                        }
-                        break;
-
+                        DateTime n = DateTime.Now;
+                        string text = "Error Log written date: " + n + " *** " + "from method: while loop";
+                        log obje = new log();
+                        obje.WriteToErrFile(text);
+                        WriteLine($"{ex.GetType()} says {ex.Message}");
+                    }
                 }
-
             }
-            catch (Exception ex)
-            {
-                DateTime n = DateTime.Now;
-                string text = "Error Log written date: " + n + " *** " + "from method: while loop";
-                log obje = new log();
-                obje.WriteToErrFile(text);
-                WriteLine($"{ex.GetType()} says {ex.Message}");
-
-            }
-
-
         }
     }
-
 }
+
+
+
+
+

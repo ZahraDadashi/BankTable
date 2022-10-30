@@ -1,25 +1,23 @@
-using BankAccount;
-using logProject;
+using System.ComponentModel.DataAnnotations; // [Required], [StringLength]
+using System.ComponentModel.DataAnnotations.Schema; // [Column]
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace transactions
+namespace Packt.Shared;
+
+//using logProject;
+
+
+public class trans
 {
-    public class trans
-    {
-        public double changeAmt;
-        public double Balance;
-        public DateTimeOffset time;
-        public trans( double amt,double Bal,DateTimeOffset n)
-        {
-            changeAmt = amt;
-            time = n;
-            Balance = Bal;
-            
-        }
-        public void trnum(int accNum)
-        {  
-            Console.WriteLine($"Account number:{accNum,-5} deposit/withdraw:{changeAmt,-5} Balance:{Balance,-5} at:{time,-5}");
-            
-        }
-        
-    }
+   [Key]
+    public int TransID { get; set; }
+    public double changeAmt { get; set; }
+    public double Balance { get; set; }
+    public DateTimeOffset time { get; set; }
+    public int AccNum { get; set; }
+
 }

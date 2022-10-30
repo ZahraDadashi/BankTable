@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Zahra\\Desktop\\Code\\Bank\\BankAccount\\BankAccount.csproj": {}
+    "C:\\Users\\Zahra\\Desktop\\Code\\BankTable\\Bank\\BankAccount.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Zahra\\Desktop\\Code\\Bank\\BankAccount\\BankAccount.csproj": {
+    "C:\\Users\\Zahra\\Desktop\\Code\\BankTable\\Bank\\BankAccount.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Zahra\\Desktop\\Code\\Bank\\BankAccount\\BankAccount.csproj",
+        "projectUniqueName": "C:\\Users\\Zahra\\Desktop\\Code\\BankTable\\Bank\\BankAccount.csproj",
         "projectName": "BankAccount",
-        "projectPath": "C:\\Users\\Zahra\\Desktop\\Code\\Bank\\BankAccount\\BankAccount.csproj",
+        "projectPath": "C:\\Users\\Zahra\\Desktop\\Code\\BankTable\\Bank\\BankAccount.csproj",
         "packagesPath": "C:\\Users\\Zahra\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Zahra\\Desktop\\Code\\Bank\\BankAccount\\obj\\",
+        "outputPath": "C:\\Users\\Zahra\\Desktop\\Code\\BankTable\\Bank\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Zahra\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -37,6 +37,20 @@
       "frameworks": {
         "net6.0": {
           "targetAlias": "net6.0",
+          "dependencies": {
+            "Microsoft.EntityFrameworkCore.Design": {
+              "target": "Package",
+              "version": "[6.0.0, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[6.0.0, )"
+            },
+            "Microsoft.EntityFrameworkCore.Sqlite": {
+              "target": "Package",
+              "version": "[6.0.0, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",

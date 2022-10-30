@@ -2,9 +2,9 @@ using static System.Console;
 using static System.IO.Directory;
 using static System.IO.Path;
 using static System.Environment;
+namespace Packt.Shared;
 
-namespace logProject
-{
+
     public class log
     {
         static string logFile = Combine(CurrentDirectory, "log.txt");
@@ -57,4 +57,3 @@ namespace logProject
             }
         }
     }
-}
